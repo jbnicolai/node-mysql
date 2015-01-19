@@ -1,17 +1,36 @@
 Package: alinex-mysql
 =================================================
 
-[![Build Status] (https://travis-ci.org/alinex/node-mysql.svg?branch=master)](https://travis-ci.org/alinex/node-mysql) 
+[![Build Status] (https://travis-ci.org/alinex/node-mysql.svg?branch=master)](https://travis-ci.org/alinex/node-mysql)
 [![Coverage Status] (https://coveralls.io/repos/alinex/node-mysql/badge.png?branch=master)](https://coveralls.io/r/alinex/node-mysql?branch=master)
 [![Dependency Status] (https://gemnasium.com/alinex/node-mysql.png)](https://gemnasium.com/alinex/node-mysql)
 
-Description comes here...
+A simple mysql access wrapper which will leverage the integration of a mysql
+database into an alinex based application.
+
+- full configurable
+- connection pooling
+- integrated debug possibilities
+- short method calls
+
+It is one of the modules of the [Alinex Universe](http://alinex.github.io/node-alinex)
+following the code standards defined there.
 
 
 Install
 -------------------------------------------------
 
+The easiest way is to let npm add the module directly:
+
+    > npm install alinex-mysql --save
+
 [![NPM](https://nodei.co/npm/alinex-mysql.png?downloads=true&stars=true)](https://nodei.co/npm/alinex-mysql/)
+
+
+Usage
+-------------------------------------------------
+
+To be written...
 
 
 License

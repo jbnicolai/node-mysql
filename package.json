@@ -1,10 +1,14 @@
 {
   "name": "alinex-mysql",
   "version": "0.0.0",
-  "description": "",
+  "description": "Mysql access wrapper",
   "copyright": "Alexander Schilling 2015",
   "private": false,
-  "keywords": [],
+  "keywords": [
+    "mysql",
+    "connection",
+    "pooling"
+  ],
   "homepage": "http://alinex.github.io/node-mysql/",
   "repository": {
     "type": "git",
@@ -26,9 +30,14 @@
   "directories": {
     "lib": "./lib"
   },
-  "dependencies": {},
+  "dependencies": {
+    "alinex-config": "^0.3.4",
+    "debug": "^2.1.1",
+    "mysql": "^2.5.4"
+  },
   "devDependencies": {
-    "alinex-make": "0.4.x"
+    "alinex-make": "0.4.x",
+    "chai": "^1.10.0"
   },
   "optionalDependencies": {},
   "engines": {

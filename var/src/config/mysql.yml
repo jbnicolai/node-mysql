@@ -1,0 +1,15 @@
+# Database setup
+# =================================================
+
+# Mediacenter Database
+# -------------------------------------------------
+mc:
+  type: mysql
+  host: localhost
+  port: 3306
+  database: mc
+  user: mediacenter
+  #password: ???
+  #charset: UTF8_GENERAL_CI
+  #timezone: local
+  #connectionTimeout: 10s

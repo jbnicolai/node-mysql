@@ -31,15 +31,15 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "alinex-config": "^0.3.4",
-    "chalk": "^0.5.1",
-    "debug": "^2.1.1",
-    "mysql": "^2.5.4"
+    "alinex-config": "0.3.x",
+    "chalk": "0.5.x",
+    "debug": "2.x",
+    "mysql": "2.x"
   },
   "devDependencies": {
-    "alinex-error": "^0.2.6",
+    "alinex-error": "0.2.x",
     "alinex-make": "0.4.x",
-    "chai": "^1.10.0"
+    "chai": "1.x"
   },
   "optionalDependencies": {},
   "engines": {

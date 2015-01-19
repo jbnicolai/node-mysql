@@ -8,6 +8,12 @@
 
 # include base modules
 debug = require('debug')('mysql')
+debugPool = require('debug')('mysql:pool')
+debugQuery = require('debug')('mysql:query')
+debugResult = require('debug')('mysql:result')
+debugData = require('debug')('mysql:data')
+debugCom = require('debug')('mysql:com')
+chalk = require 'chalk'
 util = require 'util'
 path = require 'path'
 mysql = require 'mysql'
@@ -44,15 +50,13 @@ class Mysql
         console.error err if err
         cb err if cb?
         @initDone = true
-    config = Config.instance 'database'
-    config.setCheck check.database
-    config.load cb
 
   # ### Factory
   # Get an instance for the name. This enables the system to use the same
   # Config instance anywhere.
   @_instances: {}
   @instance: (name) ->
+    # start initializing, if not done
     unless @_instances[name]?
       @_instances[name] = new Mysql name
     @_instances[name]
@@ -61,9 +65,54 @@ class Mysql
   # This will also load the data if not already done. Don't call this directly
   # better use the `instance()` method which implements the factory pattern.
   constructor: (@name) ->
+    debug "create #{@name} instance"
     unless name
       throw new Error "Could not initialize Mysql class without database alias."
 
+  connection: (cb) ->
+    unless Mysql.initDone?
+      return Mysql.init null, =>
+        @connection cb
+    # instantiate pool if not already done
+    unless @pool?
+      debug "initialize connection pool for #{@name}"
+      unless @constructor.config[@name]
+        return cb new Error "Given database alias '#{@name}' is not defined in configuration."
+      @pool = mysql.createPool @constructor.config[@name]
+      @pool.on 'connection', ->
+        debugPool "create connection on #{@name} pool"
+      @pool.on 'enqueue', ->
+        debugPool "waiting for connection on #{@name} pool"
+    # get the connection
+    @pool.getConnection (err, conn) ->
+      if err
+        debug "error: #{err} on connection to #{name}"
+      else
+        conn.on 'error', (err) ->
+          debug "uncatched error: #{err} on connection to #{name}"
+          throw err
+        # switch on debugging wih own method
+        conn.config.debug = true
+        conn._protocol._debugPacket = (incoming, packet) ->
+          dir = if incoming then '<--' else '-->'
+          #msg = "#{dir} #{packet.constructor.name} " + chalk.grey util.inspect packet
+          msg = util.inspect packet
+          switch packet.constructor.name
+            when 'ComQueryPacket'
+              debugQuery "#{msg}"
+            when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
+              debugResult "#{packet.constructor.name} #{chalk.grey msg}"
+            when 'RowDataPacket'
+              debugData msg
+            else
+              debugCom "#{dir} #{packet.constructor.name} #{chalk.grey msg}"
+
+      cb err, conn
+
+  close: (cb) ->
+    @pool.end (err) =>
+      @pool = null
+      cb err
 
 # Exports
 # -------------------------------------------------

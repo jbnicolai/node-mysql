@@ -3,13 +3,12 @@
 
 # Mediacenter Database
 # -------------------------------------------------
-mc:
-  type: mysql
+test:
   host: localhost
-  port: 3306
-  database: mc
-  user: mediacenter
-  #password: ???
+  #port: 3306
+  database: test
+  user: test
+  #password:
   #charset: UTF8_GENERAL_CI
   #timezone: local
-  #connectionTimeout: 10s
+  #connectTimeout: 10s

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>index.coffee</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <link rel="stylesheet" media="all" href="../doc-style.css" />
+  <script src="../doc-filelist.js"></script>
+  <script>
+    var relativeDir = "../", thisFile = "home/alex/a3/node-mysql/src/indexcoffee", defaultSidebar = true;
+  </script>
+  <script src="../doc-script.js"></script>
+  <script src="../fileSearch.js"></script>
+  <script src="../goToLine.js"></script>
+  <link rel="stylesheet" href="../fileSearch.css" />
+  <link rel="stylesheet" href="../goToLine.css" />
+</head>
+<body>
+  <div id="sidebar_wrapper">
+    <div id="sidebar_switch">
+      <span class="tree">Files</span>
+      <span class="headings">Headings</span>
+    </div>
+    <div id="tree"></div>
+    <div id="headings">
+      <div class="heading h1">
+        <a href="#mysql%20access">Mysql access</a>
+      </div>
+      <div class="heading h2">
+        <a href="#node%20modules">Node Modules</a>
+      </div>
+      <div class="heading h2">
+        <a href="#database%20class">Database class</a>
+      </div>
+      <div class="heading h3">
+        <a href="#factory">Factory</a>
+      </div>
+      <div class="heading h3">
+        <a href="#create%20instance">Create instance</a>
+      </div>
+      <div class="heading h2">
+        <a href="#exports">Exports</a>
+      </div>
+    </div>
+  </div>
+  <div id="sidebar-toggle"></div>
+  <div id="container"><a id="fork" href="https://github.com/alinex/node-mysql" title="Fork me on GitHub"></a><div class="background highlight"></div>
+<table cellpadding="0" cellspacing="0">
+  <tbody>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="mysql%20access">
+  <h1>
+    <a href="#mysql%20access" name="mysql%20access" class="pilcrow">&#182;</a>
+    Mysql access
+  </h1>
+</div>
+
+
+<p>This package will give you an easy and robust way to access mysql databases.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre></pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="node%20modules">
+  <h2>
+    <a href="#node%20modules" name="node%20modules" class="pilcrow">&#182;</a>
+    Node Modules
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-3" id="section-3">&#182;</a>
+</div>
+<p>include base modules</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nv">debug = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql&#39;</span><span class="p">)</span>
+<span class="nv">debugPool = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql:pool&#39;</span><span class="p">)</span>
+<span class="nv">debugQuery = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql:query&#39;</span><span class="p">)</span>
+<span class="nv">debugResult = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql:result&#39;</span><span class="p">)</span>
+<span class="nv">debugData = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql:data&#39;</span><span class="p">)</span>
+<span class="nv">debugCom = </span><span class="nx">require</span><span class="p">(</span><span class="s">&#39;debug&#39;</span><span class="p">)(</span><span class="s">&#39;mysql:com&#39;</span><span class="p">)</span>
+<span class="nv">chalk = </span><span class="nx">require</span> <span class="s">&#39;chalk&#39;</span>
+<span class="nv">util = </span><span class="nx">require</span> <span class="s">&#39;util&#39;</span>
+<span class="nv">path = </span><span class="nx">require</span> <span class="s">&#39;path&#39;</span>
+<span class="nv">mysql = </span><span class="nx">require</span> <span class="s">&#39;mysql&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-4" id="section-4">&#182;</a>
+</div>
+<p>include more alinex modules</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nv">Config = </span><span class="nx">require</span> <span class="s">&#39;alinex-config&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-5" id="section-5">&#182;</a>
+</div>
+<p>internal helpers</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nv">configcheck = </span><span class="nx">require</span> <span class="s">&#39;./configcheck&#39;</span>
+
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="database%20class">
+  <h2>
+    <a href="#database%20class" name="database%20class" class="pilcrow">&#182;</a>
+    Database class
+  </h2>
+</div>
+
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="k">class</span> <span class="nx">Mysql</span>
+
+  <span class="vi">@init: </span><span class="nf">(@config = &#39;mysql&#39;, cb) -&gt;</span>
+    <span class="nx">debug</span> <span class="s">&quot;init or reinit mysql&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-7" id="section-7">&#182;</a>
+</div>
+<p>set config from different values</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="k">if</span> <span class="k">typeof</span> <span class="nx">@config</span> <span class="o">is</span> <span class="s">&#39;string&#39;</span>
+      <span class="vi">@config = </span><span class="nx">Config</span><span class="p">.</span><span class="nx">instance</span> <span class="nx">@config</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-8" id="section-8">&#182;</a>
+</div>
+<p>add the module's directory as default</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@config</span><span class="p">.</span><span class="nx">search</span><span class="p">.</span><span class="nx">unshift</span> <span class="nx">path</span><span class="p">.</span><span class="nx">resolve</span> <span class="nx">path</span><span class="p">.</span><span class="nx">dirname</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">),</span> <span class="s">&#39;var/src/config&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-9" id="section-9">&#182;</a>
+</div>
+<p>add the check methods</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@config</span><span class="p">.</span><span class="nx">setCheck</span> <span class="nx">configcheck</span>
+    <span class="k">if</span> <span class="nx">@config</span> <span class="k">instanceof</span> <span class="nx">Config</span>
+      <span class="vi">@configClass = </span><span class="nx">@config</span>
+      <span class="vi">@config = </span><span class="nx">@configClass</span><span class="p">.</span><span class="nx">data</span>
+    <span class="vi">@initDone = </span><span class="kc">false</span> <span class="c1"># status set to true after initializing</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-10" id="section-10">&#182;</a>
+</div>
+<p>set init status if configuration is loaded</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="k">unless</span> <span class="nx">@configClass</span><span class="o">?</span>
+      <span class="nx">cb</span><span class="p">()</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span>
+      <span class="vi">@initDone = </span><span class="kc">true</span>
+    <span class="k">else</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-11" id="section-11">&#182;</a>
+</div>
+<p>wait till configuration is loaded</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+      <span class="nx">@configClass</span><span class="p">.</span><span class="nx">load</span> <span class="nf">(err) =&gt;</span>
+        <span class="nx">console</span><span class="p">.</span><span class="nx">error</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">err</span>
+        <span class="nx">cb</span> <span class="nx">err</span> <span class="k">if</span> <span class="nx">cb</span><span class="o">?</span>
+        <span class="vi">@initDone = </span><span class="kc">true</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="factory">
+  <h3>
+    <a href="#factory" name="factory" class="pilcrow">&#182;</a>
+    Factory
+  </h3>
+</div>
+
+
+<p>Get an instance for the name. This enables the system to use the same
+Config instance anywhere.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="vi">@_instances: </span><span class="p">{}</span>
+  <span class="vi">@instance: </span><span class="nf">(name) -&gt;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-13" id="section-13">&#182;</a>
+</div>
+<p>start initializing, if not done</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="k">unless</span> <span class="nx">@_instances</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span><span class="o">?</span>
+      <span class="nx">@_instances</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">Mysql</span> <span class="nx">name</span>
+    <span class="nx">@_instances</span><span class="p">[</span><span class="nx">name</span><span class="p">]</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="create%20instance">
+  <h3>
+    <a href="#create%20instance" name="create%20instance" class="pilcrow">&#182;</a>
+    Create instance
+  </h3>
+</div>
+
+
+<p>This will also load the data if not already done. Don't call this directly
+better use the <code>instance()</code> method which implements the factory pattern.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+  <span class="nv">constructor: </span><span class="nf">(@name) -&gt;</span>
+    <span class="nx">debug</span> <span class="s">&quot;create </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> instance&quot;</span>
+    <span class="k">unless</span> <span class="nx">name</span>
+      <span class="k">throw</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;Could not initialize Mysql class without database alias.&quot;</span>
+
+  <span class="nv">connection: </span><span class="nf">(cb) -&gt;</span>
+    <span class="k">unless</span> <span class="nx">Mysql</span><span class="p">.</span><span class="nx">initDone</span><span class="o">?</span>
+      <span class="k">return</span> <span class="nx">Mysql</span><span class="p">.</span><span class="nx">init</span> <span class="kc">null</span><span class="p">,</span> <span class="o">=&gt;</span>
+        <span class="nx">@connection</span> <span class="nx">cb</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-15" id="section-15">&#182;</a>
+</div>
+<p>instantiate pool if not already done</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="k">unless</span> <span class="nx">@pool</span><span class="o">?</span>
+      <span class="nx">debug</span> <span class="s">&quot;initialize connection pool for </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&quot;</span>
+      <span class="k">unless</span> <span class="nx">@constructor</span><span class="p">.</span><span class="nx">config</span><span class="p">[</span><span class="nx">@name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nx">cb</span> <span class="k">new</span> <span class="nb">Error</span> <span class="s">&quot;Given database alias &#39;</span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s">&#39; is not defined in configuration.&quot;</span>
+      <span class="vi">@pool = </span><span class="nx">mysql</span><span class="p">.</span><span class="nx">createPool</span> <span class="nx">@constructor</span><span class="p">.</span><span class="nx">config</span><span class="p">[</span><span class="nx">@name</span><span class="p">]</span>
+      <span class="nx">@pool</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;connection&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+        <span class="nx">debugPool</span> <span class="s">&quot;create connection on </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> pool&quot;</span>
+      <span class="nx">@pool</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;enqueue&#39;</span><span class="p">,</span> <span class="nf">-&gt;</span>
+        <span class="nx">debugPool</span> <span class="s">&quot;waiting for connection on </span><span class="si">#{</span><span class="nx">@name</span><span class="si">}</span><span class="s"> pool&quot;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-16" id="section-16">&#182;</a>
+</div>
+<p>get the connection</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+    <span class="nx">@pool</span><span class="p">.</span><span class="nx">getConnection</span> <span class="nf">(err, conn) -&gt;</span>
+      <span class="k">if</span> <span class="nx">err</span>
+        <span class="nx">debug</span> <span class="s">&quot;error: </span><span class="si">#{</span><span class="nx">err</span><span class="si">}</span><span class="s"> on connection to </span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span>
+      <span class="k">else</span>
+        <span class="nx">conn</span><span class="p">.</span><span class="nx">on</span> <span class="s">&#39;error&#39;</span><span class="p">,</span> <span class="nf">(err) -&gt;</span>
+          <span class="nx">debug</span> <span class="s">&quot;uncatched error: </span><span class="si">#{</span><span class="nx">err</span><span class="si">}</span><span class="s"> on connection to </span><span class="si">#{</span><span class="nx">name</span><span class="si">}</span><span class="s">&quot;</span>
+          <span class="k">throw</span> <span class="nx">err</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-17" id="section-17">&#182;</a>
+</div>
+<p>switch on debugging wih own method</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+        <span class="nv">conn.config.debug = </span><span class="kc">true</span>
+        <span class="nv">conn._protocol._debugPacket = </span><span class="nf">(incoming, packet) -&gt;</span>
+          <span class="nv">dir = </span><span class="k">if</span> <span class="nx">incoming</span> <span class="k">then</span> <span class="s">&#39;&lt;--&#39;</span> <span class="k">else</span> <span class="s">&#39;--&gt;&#39;</span>
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap">
+  <a class="pilcrow" href="#section-18" id="section-18">&#182;</a>
+</div>
+<p>msg = "#{dir} #{packet.constructor.name} " + chalk.grey util.inspect packet</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+          <span class="nv">msg = </span><span class="nx">util</span><span class="p">.</span><span class="nx">inspect</span> <span class="nx">packet</span>
+          <span class="k">switch</span> <span class="nx">packet</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">name</span>
+            <span class="k">when</span> <span class="s">&#39;ComQueryPacket&#39;</span>
+              <span class="nx">debugQuery</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">msg</span><span class="si">}</span><span class="s">&quot;</span>
+            <span class="k">when</span> <span class="s">&#39;ResultSetHeaderPacket&#39;</span><span class="p">,</span> <span class="s">&#39;FieldPacket&#39;</span><span class="p">,</span> <span class="s">&#39;EofPacket&#39;</span>
+              <span class="nx">debugResult</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">packet</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">chalk</span><span class="p">.</span><span class="nx">grey</span> <span class="nx">msg</span><span class="si">}</span><span class="s">&quot;</span>
+            <span class="k">when</span> <span class="s">&#39;RowDataPacket&#39;</span>
+              <span class="nx">debugData</span> <span class="nx">msg</span>
+            <span class="k">else</span>
+              <span class="nx">debugCom</span> <span class="s">&quot;</span><span class="si">#{</span><span class="nx">dir</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">packet</span><span class="p">.</span><span class="nx">constructor</span><span class="p">.</span><span class="nx">name</span><span class="si">}</span><span class="s"> </span><span class="si">#{</span><span class="nx">chalk</span><span class="p">.</span><span class="nx">grey</span> <span class="nx">msg</span><span class="si">}</span><span class="s">&quot;</span>
+
+      <span class="nx">cb</span> <span class="nx">err</span><span class="p">,</span> <span class="nx">conn</span>
+
+  <span class="nv">close: </span><span class="nf">(cb) -&gt;</span>
+    <span class="nx">@pool</span><span class="p">.</span><span class="nx">end</span> <span class="nf">(err) =&gt;</span>
+      <span class="vi">@pool = </span><span class="kc">null</span>
+      <span class="nx">cb</span> <span class="nx">err</span>
+
+
+</pre></div>
+        </td>
+      </tr>
+      <tr>
+        <td class="docs">
+<div class="pilwrap" id="exports">
+  <h2>
+    <a href="#exports" name="exports" class="pilcrow">&#182;</a>
+    Exports
+  </h2>
+</div>
+
+
+<p>The mysql class is exported directly.</p>
+        </td>
+        <td class="code highlight"><div class="highlight"><pre>
+<span class="nv">module.exports = </span><span class="nx">Mysql</span>
+</pre></div>
+        </td>
+      </tr>
+  </tbody>
+</table>
+  </div>
+</body>
+</html>

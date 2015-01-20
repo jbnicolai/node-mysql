@@ -40,9 +40,10 @@ API
 
 - init(name) - to be called initially, optional
 - instance(name) - to get an instance
-- escape(val) - to escape a value properly
-- escapeId(val) - to escape query identifiers
-- format(sql, val) - to inject values into parameterized query
+- escape(value) - to escape a value properly
+- escapeId(value) - to escape query identifiers
+- format(sql, vals) - to inject values into parameterized query
+- close(cb) - close all database connection pools
 
 ### Instances
 

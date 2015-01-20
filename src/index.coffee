@@ -18,6 +18,7 @@ util = require 'util'
 path = require 'path'
 mysql = require 'mysql'
 SqlString = require 'mysql/lib/protocol/SqlString'
+async = require 'async'
 # include more alinex modules
 Config = require 'alinex-config'
 # internal helpers
@@ -33,7 +34,7 @@ class Mysql
   @format: SqlString.format
 
   @init: (@config = 'mysql', cb) ->
-    debug "init or reinit mysql", SqlString
+    debug "init or reinit mysql"
     # set config from different values
     if typeof @config is 'string'
       @config = Config.instance @config
@@ -65,6 +66,11 @@ class Mysql
     unless @_instances[name]?
       @_instances[name] = new Mysql name
     @_instances[name]
+
+  @close: (cb = ->) ->
+    async.each Object.keys(@_instances), (name, cb) =>
+      @_instances[name].close cb
+    , cb
 
   # ### Create instance
   # This will also load the data if not already done. Don't call this directly
@@ -123,7 +129,7 @@ class Mysql
       # return the connection
       cb null, conn
 
-  close: (cb) =>
+  close: (cb = ->) =>
     debugPool "close connection pool for #{@name}"
     @pool.end (err) =>
       # remove pool instance to be reopened on next use
@@ -142,6 +148,7 @@ class Mysql
 
   queryOne: (sql, cb) ->
     @query sql, (err, result) ->
+      return cb null unless result.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0][Object.keys(result[0])]

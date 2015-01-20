@@ -49,6 +49,9 @@ API
 - name - gives the alias name of the database pool
 - connect(cb) - get a connection
 - close() - close the database pool
+- query(sql, cb) - run sql directly
+- queryOne(sql, cb) - get one field only
+- insertId(sql, cb) - execute query and return last insert id
 
 
 License

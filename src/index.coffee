@@ -116,12 +116,36 @@ class Mysql
 
       cb err, conn
 
-  close: (cb) ->
+  close: (cb) =>
     debugPool "close connection pool for #{@name}"
     @pool.end (err) =>
       # remove pool instance to be reopened on next use
       @pool = null
       cb err
+
+  # Shortcut functions
+  # -------------------------------------------------
+
+  query: (sql, cb) ->
+    @connect (err, conn) ->
+      return cb err if err
+      conn.query sql, (err, result) ->
+        conn.release()
+        cb err, result
+
+  queryOne: (sql, cb) ->
+    @query sql, (err, result) ->
+      unless result[0]? or Object.keys result[0]
+        cb err, null
+      cb err, result[0][Object.keys(result[0])]
+
+  insertId: (sql, cb) ->
+    @connect (err, conn) ->
+      return cb err if err
+      conn.query sql, (err, result) ->
+        conn.release()
+        cb err, result.insertId
+
 
 # Exports
 # -------------------------------------------------

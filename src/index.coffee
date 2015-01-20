@@ -72,7 +72,7 @@ class Mysql
   connect: (cb) ->
     unless Mysql.initDone?
       return Mysql.init null, =>
-        @connection cb
+        @connect cb
     # instantiate pool if not already done
     unless @pool?
       debugPool "initialize connection pool for #{@name}"

@@ -84,37 +84,44 @@ class Mysql
       unless @constructor.config[@name]
         return cb new Error "Given database alias '#{@name}' is not defined in configuration."
       @pool = mysql.createPool @constructor.config[@name]
-      @pool.on 'connection', =>
-        debugPool "retrieve connection of #{@name} pool"
+      @pool.on 'connection', (conn) =>
+        debugPool "[#{@name}##{conn.threadId}] retrieve connection"
       @pool.on 'enqueue', =>
-        debugPool "waiting for connection of #{@name} pool"
+        debugPool "[#{@name}] waiting for connection"
     # get the connection
     @pool.getConnection (err, conn) =>
       if err
-        debug "#{err} on connecting to #{@name}"
-        err = new Error "#{err.message} on connecting to #{@name} database"
-      else
-        conn.on 'error', (err) =>
-          debug "uncatched #{err} on connection to #{@name}"
-          err = new Error "#{err.message} on connection to #{@name} database"
-          throw err
-        # switch on debugging wih own method
-        conn.config.debug = true
-        conn._protocol._debugPacket = (incoming, packet) ->
-          dir = if incoming then '<--' else '-->'
-          #msg = "#{dir} #{packet.constructor.name} " + chalk.grey util.inspect packet
-          msg = util.inspect packet
-          switch packet.constructor.name
-            when 'ComQueryPacket'
-              debugQuery "#{msg}"
-            when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
-              debugResult "#{packet.constructor.name} #{chalk.grey msg}"
-            when 'RowDataPacket'
-              debugData msg
-            else
-              debugCom "#{dir} #{packet.constructor.name} #{chalk.grey msg}"
+        debug chalk.grey("[#{@name}]") + " #{err} while connecting"
+        return cb new Error "#{err.message} while connecting to #{@name} database"
+      conn.name = chalk.grey "[#{@name}##{conn.threadId}]"
+      conn.on 'error', (err) =>
+        debug "#{conn.name} uncatched #{err} on connection"
+        err = new Error "#{err.message} on connection to #{@name} database"
+        throw err
+      # switch on debugging wih own method
+      conn.config.debug = true
+      conn._protocol._debugPacket = (incoming, packet) ->
+        dir = if incoming then '<--' else '-->'
+        #msg = "#{dir} #{packet.constructor.name} " + chalk.grey util.inspect packet
+        msg = util.inspect packet
+        switch packet.constructor.name
+          when 'ComQueryPacket'
+            debugQuery "#{conn.name} #{msg}"
+          when 'ResultSetHeaderPacket', 'FieldPacket', 'EofPacket'
+            debugResult "#{conn.name} #{packet.constructor.name} #{chalk.grey msg}"
+          when 'RowDataPacket'
+            debugData "#{conn.name} #{msg}"
+          when 'ComQuitPacket'
+            debugPool "#{conn.name} close connection"
+          else
+            debugCom "#{conn.name} #{dir} #{packet.constructor.name} #{chalk.grey msg}"
+      release = conn.release
+      conn.release = =>
+        debugPool "#{conn.name} release connection to #{@name}"
+        release()
 
-      cb err, conn
+      # return the connection
+      cb null, conn
 
   close: (cb) =>
     debugPool "close connection pool for #{@name}"

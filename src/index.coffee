@@ -69,27 +69,29 @@ class Mysql
     unless name
       throw new Error "Could not initialize Mysql class without database alias."
 
-  connection: (cb) ->
+  connect: (cb) ->
     unless Mysql.initDone?
       return Mysql.init null, =>
         @connection cb
     # instantiate pool if not already done
     unless @pool?
-      debug "initialize connection pool for #{@name}"
+      debugPool "initialize connection pool for #{@name}"
       unless @constructor.config[@name]
         return cb new Error "Given database alias '#{@name}' is not defined in configuration."
       @pool = mysql.createPool @constructor.config[@name]
-      @pool.on 'connection', ->
+      @pool.on 'connection', =>
         debugPool "create connection on #{@name} pool"
-      @pool.on 'enqueue', ->
+      @pool.on 'enqueue', =>
         debugPool "waiting for connection on #{@name} pool"
     # get the connection
-    @pool.getConnection (err, conn) ->
+    @pool.getConnection (err, conn) =>
       if err
-        debug "error: #{err} on connection to #{name}"
+        debug "#{err} on connection to #{@name}"
+        err = new Error "#{err.message} on connection to #{@name} database"
       else
-        conn.on 'error', (err) ->
-          debug "uncatched error: #{err} on connection to #{name}"
+        conn.on 'error', (err) =>
+          debug "uncatched #{err} on connection to #{@name}"
+          err = new Error "#{err.message} on connection to #{@name} database"
           throw err
         # switch on debugging wih own method
         conn.config.debug = true
@@ -110,7 +112,9 @@ class Mysql
       cb err, conn
 
   close: (cb) ->
+    debugPool "close connection pool for #{@name}"
     @pool.end (err) =>
+      # remove pool instance to be reopened on next use
       @pool = null
       cb err
 

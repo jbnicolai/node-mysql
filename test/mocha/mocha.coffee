@@ -9,7 +9,7 @@ Config.search.push 'test/data'
 describe "Mysql access", ->
   it "simple query to database", (done) ->
     testdb = Mysql.instance 'test'
-    testdb.connection (err, conn) ->
+    testdb.connect (err, conn) ->
       conn.query 'SELECT 2 + 2 AS solution', (err, rows, fields) ->
         throw err if err
         console.log 'The solution is: ', rows[0].solution

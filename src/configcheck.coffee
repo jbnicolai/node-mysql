@@ -56,9 +56,6 @@ access =
       description: "the maximum number of parallel used connections"
       type: 'integer'
       default: 10
-    debug:
-      type: 'boolean'
-      default: false
 
 cluster = {}
 

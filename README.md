@@ -33,6 +33,24 @@ Usage
 To be written...
 
 
+API
+-------------------------------------------------
+
+### Class
+
+- init(name) - to be called initially, optional
+- instance(name) - to get an instance
+- escape(val) - to escape a value properly
+- escapeId(val) - to escape query identifiers
+- format(sql, val) - to inject values into parameterized query
+
+### Instances
+
+- name - gives the alias name of the database pool
+- connect(cb) - get a connection
+- close() - close the database pool
+
+
 License
 -------------------------------------------------
 

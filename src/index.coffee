@@ -17,18 +17,23 @@ chalk = require 'chalk'
 util = require 'util'
 path = require 'path'
 mysql = require 'mysql'
+SqlString = require 'mysql/lib/protocol/SqlString'
 # include more alinex modules
 Config = require 'alinex-config'
 # internal helpers
 configcheck = require './configcheck'
 
-
 # Database class
 # -------------------------------------------------
 class Mysql
 
+  # sql creation helpers
+  @escape: SqlString.escape
+  @escapeId: SqlString.escapeId
+  @format: SqlString.format
+
   @init: (@config = 'mysql', cb) ->
-    debug "init or reinit mysql"
+    debug "init or reinit mysql", SqlString
     # set config from different values
     if typeof @config is 'string'
       @config = Config.instance @config

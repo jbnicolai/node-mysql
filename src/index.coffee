@@ -148,7 +148,7 @@ class Mysql
 
   queryOne: (sql, cb) ->
     @query sql, (err, result) ->
-      return cb null unless result.length
+      return cb err unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0][Object.keys(result[0])]

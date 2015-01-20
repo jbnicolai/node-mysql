@@ -80,14 +80,14 @@ class Mysql
         return cb new Error "Given database alias '#{@name}' is not defined in configuration."
       @pool = mysql.createPool @constructor.config[@name]
       @pool.on 'connection', =>
-        debugPool "create connection on #{@name} pool"
+        debugPool "retrieve connection of #{@name} pool"
       @pool.on 'enqueue', =>
-        debugPool "waiting for connection on #{@name} pool"
+        debugPool "waiting for connection of #{@name} pool"
     # get the connection
     @pool.getConnection (err, conn) =>
       if err
-        debug "#{err} on connection to #{@name}"
-        err = new Error "#{err.message} on connection to #{@name} database"
+        debug "#{err} on connecting to #{@name}"
+        err = new Error "#{err.message} on connecting to #{@name} database"
       else
         conn.on 'error', (err) =>
           debug "uncatched #{err} on connection to #{@name}"

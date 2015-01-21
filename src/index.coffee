@@ -154,6 +154,13 @@ class Mysql
         cb err, null
       cb err, result[0][Object.keys(result[0])]
 
+  queryRow: (sql, cb) ->
+    @query sql, (err, result) ->
+      return cb err unless result?.length
+      unless result[0]? or Object.keys result[0]
+        cb err, null
+      cb err, result[0]
+
   insertId: (sql, cb) ->
     @connect (err, conn) ->
       return cb err if err

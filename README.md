@@ -52,6 +52,7 @@ API
 - close() - close the database pool
 - query(sql, cb) - run sql directly
 - queryOne(sql, cb) - get one field only
+- queryRow(sql, cb) - get one row as data object
 - insertId(sql, cb) - execute query and return last insert id
 
 

@@ -68,6 +68,7 @@ class Mysql
     @_instances[name]
 
   @close: (cb = ->) ->
+    debug "Close all database connections..."
     async.each Object.keys(@_instances), (name, cb) =>
       @_instances[name].close cb
     , cb

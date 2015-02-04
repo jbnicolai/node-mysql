@@ -78,7 +78,7 @@ class Mysql
   # better use the `instance()` method which implements the factory pattern.
   constructor: (@name) ->
     debug "create #{@name} instance"
-    unless name
+    unless @name
       throw new Error "Could not initialize Mysql class without database alias."
 
   connect: (cb) ->
@@ -109,7 +109,6 @@ class Mysql
       conn.config.debug = true
       conn._protocol._debugPacket = (incoming, packet) ->
         dir = if incoming then '<--' else '-->'
-        #msg = "#{dir} #{packet.constructor.name} " + chalk.grey util.inspect packet
         msg = util.inspect packet
         switch packet.constructor.name
           when 'ComQueryPacket'
@@ -126,9 +125,6 @@ class Mysql
       conn.release = =>
         debugPool "#{conn.name} release connection to #{@name}"
         release()
-      # error management
-      if packet.constructor.name is 'ErrorPacket'
-        return cb new Error "MySQL Error: #{packet.message} (MySQL Error #{packet.errno})"
       # return the connection
       cb null, conn
 
@@ -144,28 +140,30 @@ class Mysql
 
   query: (sql, cb) ->
     @connect (err, conn) ->
-      return cb err if err
+      return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
         conn.release()
         cb err, result
 
   queryOne: (sql, cb) ->
     @query sql, (err, result) ->
-      return cb err unless result?.length
+      return cb new Error "MySQL Error: #{err.message}" if err
+      return cb err() result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0][Object.keys(result[0])]
 
   queryRow: (sql, cb) ->
     @query sql, (err, result) ->
-      return cb err unless result?.length
+      return cb new Error "MySQL Error: #{err.message}" if err
+      return cb() unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0]
 
   insertId: (sql, cb) ->
     @connect (err, conn) ->
-      return cb err if err
+      return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
         conn.release()
         cb err, result.insertId

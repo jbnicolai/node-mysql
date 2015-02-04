@@ -4,6 +4,10 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.0.3 (2015-02-04)
+-------------------------------------------------
+- Throw error if one got from the database.
+
 Version 0.0.2 (2015-01-26)
 -------------------------------------------------
 - Added method to query one row.

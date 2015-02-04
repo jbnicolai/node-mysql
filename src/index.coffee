@@ -143,19 +143,20 @@ class Mysql
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
         conn.release()
+        err = new Error "MySQL Error: #{err.message} in #{sql}" if err
         cb err, result
 
   queryOne: (sql, cb) ->
     @query sql, (err, result) ->
-      return cb new Error "MySQL Error: #{err.message}" if err
-      return cb err() result?.length
+      return cb err if err
+      return cb() unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0][Object.keys(result[0])]
 
   queryRow: (sql, cb) ->
     @query sql, (err, result) ->
-      return cb new Error "MySQL Error: #{err.message}" if err
+      return cb err if err
       return cb() unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
@@ -166,6 +167,7 @@ class Mysql
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
         conn.release()
+        err = new Error "MySQL Error: #{err.message} in #{sql}" if err
         cb err, result.insertId
 
 

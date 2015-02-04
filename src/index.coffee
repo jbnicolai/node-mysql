@@ -126,7 +126,9 @@ class Mysql
       conn.release = =>
         debugPool "#{conn.name} release connection to #{@name}"
         release()
-
+      # error management
+      if packet.constructor.name is 'ErrorPacket'
+        return cb new Error "MySQL Error: #{packet.message} (MySQL Error #{packet.errno})"
       # return the connection
       cb null, conn
 

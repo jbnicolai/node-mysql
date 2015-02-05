@@ -171,9 +171,10 @@ class Mysql
     @connect (err, conn) ->
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
+        lastid = result.insertId()
         conn.release()
         err = new Error "MySQL Error: #{err.message} in #{sql}" if err
-        cb err, result.insertId()
+        cb err, lastid
 
 
 # Exports

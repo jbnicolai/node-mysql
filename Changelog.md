@@ -4,6 +4,12 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.0.4 (2015-02-05)
+-------------------------------------------------
+- Fix bug in retrieving last insert id.
+- Optimized error output.
+- Optimized error reporting.
+
 Version 0.0.3 (2015-02-04)
 -------------------------------------------------
 - Throw error if one got from the database.

@@ -162,13 +162,18 @@ class Mysql
         cb err, null
       cb err, result[0]
 
+  queryCount: (sql, cb) ->
+    @query sql, (err, result) ->
+      return cb err if err
+      return cb null, result?.length
+
   insertId: (sql, cb) ->
     @connect (err, conn) ->
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
         conn.release()
         err = new Error "MySQL Error: #{err.message} in #{sql}" if err
-        cb err, result.insertId
+        cb err, result.insertId()
 
 
 # Exports

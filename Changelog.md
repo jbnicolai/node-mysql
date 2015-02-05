@@ -4,6 +4,10 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.0.5 (2015-02-05)
+-------------------------------------------------
+- Fix in insertId.
+
 Version 0.0.4 (2015-02-05)
 -------------------------------------------------
 - Fix bug in retrieving last insert id.

@@ -100,7 +100,8 @@ class Mysql
       if err
         debug chalk.grey("[#{@name}]") + " #{err} while connecting"
         return cb new Error "#{err.message} while connecting to #{@name} database"
-      conn.name = chalk.grey "[#{@name}##{conn.threadId}]"
+      conn.name = chalk.grey "[#{@name}##{conn._socket._handle.fd}]"
+      debugPool "#{conn.name} acquired connection"
       conn.on 'error', (err) =>
         debug "#{conn.name} uncatched #{err} on connection"
         err = new Error "#{err.message} on connection to #{@name} database"
@@ -121,10 +122,11 @@ class Mysql
             debugPool "#{conn.name} close connection"
           else
             debugCom "#{conn.name} #{dir} #{packet.constructor.name} #{chalk.grey msg}"
-      release = conn.release
-      conn.release = =>
-        debugPool "#{conn.name} release connection to #{@name}"
-        release()
+      conn.release = ->
+        debugPool "#{conn.name} release connection (#{@_pool._freeConnections.length+1}/#{@_pool._allConnections.length} free)"
+        # release code copied from original function
+        return unless @_pool? and not @_pool._closed
+        @_pool.releaseConnection @
       # return the connection
       cb null, conn
 
@@ -171,10 +173,9 @@ class Mysql
     @connect (err, conn) ->
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
-        lastid = result.insertId()
         conn.release()
-        err = new Error "MySQL Error: #{err.message} in #{sql}" if err
-        cb err, lastid
+        return cb new Error "MySQL Error: #{err.message} in #{sql}" if err
+        cb err, result.insertId
 
 
 # Exports

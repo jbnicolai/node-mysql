@@ -92,20 +92,21 @@ class Mysql
         return cb new Error "Given database alias '#{@name}' is not defined in configuration."
       @pool = mysql.createPool @constructor.config[@name]
       @pool.on 'connection', (conn) =>
-        debugPool "[#{@name}##{conn.threadId}] retrieve connection"
+        conn.name = chalk.grey "[#{@name}##{conn._socket._handle.fd}]"
+        debugPool "#{conn.name} open connection"
+        conn.on 'error', (err) =>
+          debug "#{conn.name} uncatched #{err} on connection"
+          err = new Error "#{err.message} on connection to #{@name} database"
+          throw err
       @pool.on 'enqueue', =>
-        debugPool "[#{@name}] waiting for connection"
+        name = chalk.grey "[#{@name}]"
+        debugPool "{name} waiting for connection"
     # get the connection
     @pool.getConnection (err, conn) =>
       if err
         debug chalk.grey("[#{@name}]") + " #{err} while connecting"
         return cb new Error "#{err.message} while connecting to #{@name} database"
-      conn.name = chalk.grey "[#{@name}##{conn._socket._handle.fd}]"
       debugPool "#{conn.name} acquired connection"
-      conn.on 'error', (err) =>
-        debug "#{conn.name} uncatched #{err} on connection"
-        err = new Error "#{err.message} on connection to #{@name} database"
-        throw err
       # switch on debugging wih own method
       conn.config.debug = true
       conn._protocol._debugPacket = (incoming, packet) ->

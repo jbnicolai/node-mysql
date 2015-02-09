@@ -31,6 +31,21 @@
       <div class="heading h2">
         <a href="#usage">Usage</a>
       </div>
+      <div class="heading h3">
+        <a href="#placeholders">Placeholders</a>
+      </div>
+      <div class="heading h2">
+        <a href="#configuration">Configuration</a>
+      </div>
+      <div class="heading h2">
+        <a href="#api">API</a>
+      </div>
+      <div class="heading h3">
+        <a href="#class">Class</a>
+      </div>
+      <div class="heading h3">
+        <a href="#instances">Instances</a>
+      </div>
       <div class="heading h2">
         <a href="#license">License</a>
       </div>
@@ -46,9 +61,7 @@
 </div>
 
 
-<p><a href="https://travis-ci.org/alinex/node-mysql"><img src="https://travis-ci.org/alinex/node-mysql.svg?branch=master" alt="Build Status" title="" /></a>
-<a href="https://coveralls.io/r/alinex/node-mysql?branch=master"><img src="https://coveralls.io/repos/alinex/node-mysql/badge.png?branch=master" alt="Coverage Status" title="" /></a>
-<a href="https://gemnasium.com/alinex/node-mysql"><img src="https://gemnasium.com/alinex/node-mysql.png" alt="Dependency Status" title="" /></a></p>
+<p><a href="https://gemnasium.com/alinex/node-mysql"><img src="https://gemnasium.com/alinex/node-mysql.png" alt="Dependency Status" title="" /></a></p>
 
 <p>A simple mysql access wrapper which will leverage the integration of a mysql
 database into an alinex based application.</p>
@@ -91,7 +104,174 @@ following the code standards defined there.</p>
 </div>
 
 
-<p>To be written...</p>
+<p>First you have to include the module:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">Mysql</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;alinex-mysql&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+
+
+<p>The complete setup for the database connection is done smoothly in the background
+using the <a href="http://alinex.github.io/node-config">alinex-config</a> module with the
+<code>mysql.yml</code> file as default. If you have it in another file call:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">Mysql</span><span class="p">.</span><span class="nx">init</span><span class="p">(</span><span class="nx">config</span><span class="p">);</span>
+</code></pre></div>
+
+
+
+<p>The <code>config</code> here may be a name or the configuration structure.</p>
+
+<p>After that you setup the database by giving an database alias which is set in the
+configuration:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">db</span> <span class="o">=</span> <span class="nx">Mysql</span><span class="p">.</span><span class="nx">instance</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">);</span>
+</code></pre></div>
+
+
+
+<p>Now you may directly execute some queries with the shortcut methods:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">db</span><span class="p">.</span><span class="nx">queryOne</span><span class="p">(</span><span class="s2">&quot;SELECT COUNT(*) FROM mc_product&quot;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">num</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">// do something with the `num`</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+
+<div class="pilwrap" id="placeholders">
+  <h3>
+    <a href="#placeholders" name="placeholders" class="pilcrow">&#182;</a>
+    Placeholders
+  </h3>
+</div>
+
+
+<p>You may also use placeholders which will smartly be replaced before executing the query.
+You won't need to encode them also.</p>
+
+
+<div class="highlight"><pre><code><span class="nx">db</span><span class="p">.</span><span class="nx">queryOne</span><span class="p">(</span><span class="s1">&#39;SELECT ID FROM product WHERE alias = ?&#39;</span><span class="p">,</span> <span class="s1">&#39;tomato&#39;</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">result</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">// do something with the `result`</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+<p>And if you have multiple placeholders give an array:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">db</span><span class="p">.</span><span class="nx">queryOne</span><span class="p">(</span><span class="s2">&quot;SELECT md5 FROM file WHERE productID = ? AND file = ?&quot;</span><span class="p">,</span>
+<span class="p">[</span><span class="nx">productID</span><span class="p">,</span> <span class="nx">path</span><span class="p">.</span><span class="nx">basename</span><span class="p">(</span><span class="nx">file</span><span class="p">)],</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">checksumDb</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">// do something with the `esult`</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+<p>And at last you may give an object to be set as placeholder:</p>
+
+
+<div class="highlight"><pre><code><span class="nx">db</span><span class="p">.</span><span class="nx">insertId</span><span class="p">(</span><span class="s2">&quot;INSERT INTO file SET ?&quot;</span><span class="p">,</span> <span class="p">{</span>
+  <span class="nx">productID</span><span class="o">:</span> <span class="nx">productID</span><span class="p">,</span>
+  <span class="nx">ready</span><span class="o">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">name</span><span class="o">:</span> <span class="nx">name</span><span class="p">,</span>
+  <span class="nx">dir</span><span class="o">:</span> <span class="s2">&quot;anydir/&quot;</span><span class="p">,</span>
+<span class="p">},</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">fileID</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="c1">// go on and use the just created `fileID`</span>
+<span class="p">});</span>
+</code></pre></div>
+
+
+
+<p>There are some more short methods you may use. see in the API below.</p>
+
+
+<div class="pilwrap" id="configuration">
+  <h2>
+    <a href="#configuration" name="configuration" class="pilcrow">&#182;</a>
+    Configuration
+  </h2>
+</div>
+
+
+<p>The configuration contains a list of named database connections each with the
+following entries:</p>
+
+<ul>
+<li>host - the hostname or ip address to connect to</li>
+<li>port - the port mysql is listening (default: 3306)</li>
+<li>database - the name of the database to use</li>
+<li>user - the name used to log into the database</li>
+<li>password - the password to login</li>
+<li>charset - the charset used if no other given</li>
+<li>timezone - the timezone to use</li>
+<li>connectTimeout - the time till a connection should be established</li>
+<li>connectionLimit - the maximum number of parallel used connections</li>
+</ul>
+
+
+<div class="pilwrap" id="api">
+  <h2>
+    <a href="#api" name="api" class="pilcrow">&#182;</a>
+    API
+  </h2>
+</div>
+
+
+
+<div class="pilwrap" id="class">
+  <h3>
+    <a href="#class" name="class" class="pilcrow">&#182;</a>
+    Class
+  </h3>
+</div>
+
+
+<ul>
+<li>init(name) - to be called initially, optional</li>
+<li>instance(name) - to get an instance</li>
+<li>escape(value) - to escape a value properly</li>
+<li>escapeId(value) - to escape query identifiers</li>
+<li>format(sql, vals) - to inject values into parameterized query</li>
+<li>close(cb) - close all database connection pools</li>
+</ul>
+
+
+<div class="pilwrap" id="instances">
+  <h3>
+    <a href="#instances" name="instances" class="pilcrow">&#182;</a>
+    Instances
+  </h3>
+</div>
+
+
+<ul>
+<li>name - gives the alias name of the database pool</li>
+<li>close() - close the database pool</li>
+<li>connect(cb) - get a connection</li>
+<li>query(sql, data, cb) - run sql directly</li>
+<li>queryOne(sql, data, cb) - get one field only</li>
+<li>queryRow(sql, data, cb) - get one row as data object</li>
+<li>insertId(sql, data, cb) - execute query and return last insert id</li>
+</ul>
 
 
 <div class="pilwrap" id="license">

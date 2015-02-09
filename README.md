@@ -48,12 +48,12 @@ API
 ### Instances
 
 - name - gives the alias name of the database pool
-- connect(cb) - get a connection
 - close() - close the database pool
-- query(sql, cb) - run sql directly
-- queryOne(sql, cb) - get one field only
-- queryRow(sql, cb) - get one row as data object
-- insertId(sql, cb) - execute query and return last insert id
+- connect(cb) - get a connection
+- query(sql, data, cb) - run sql directly
+- queryOne(sql, data, cb) - get one field only
+- queryRow(sql, data, cb) - get one row as data object
+- insertId(sql, data, cb) - execute query and return last insert id
 
 
 License

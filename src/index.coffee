@@ -141,7 +141,13 @@ class Mysql
   # Shortcut functions
   # -------------------------------------------------
 
-  query: (sql, cb) ->
+  query: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
+    # replace placeholders
+    sql = mysql.format sql, data if data
+    # run the query
     @connect (err, conn) ->
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->
@@ -149,28 +155,34 @@ class Mysql
         err = new Error "MySQL Error: #{err.message} in #{sql}" if err
         cb err, result
 
-  queryOne: (sql, cb) ->
-    @query sql, (err, result) ->
+  queryOne: (sql, data, cb) ->
+    @query sql, data, (err, result) ->
       return cb err if err
       return cb() unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0][Object.keys(result[0])]
 
-  queryRow: (sql, cb) ->
-    @query sql, (err, result) ->
+  queryRow: (sql, data, cb) ->
+    @query sql, data, (err, result) ->
       return cb err if err
       return cb() unless result?.length
       unless result[0]? or Object.keys result[0]
         cb err, null
       cb err, result[0]
 
-  queryCount: (sql, cb) ->
-    @query sql, (err, result) ->
+  queryCount: (sql, data, cb) ->
+    @query sql, data, (err, result) ->
       return cb err if err
       return cb null, result?.length
 
-  insertId: (sql, cb) ->
+  insertId: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
+    # replace placeholders
+    sql = mysql.format sql, data if data
+    # run the query
     @connect (err, conn) ->
       return cb new Error "MySQL Error: #{err.message}" if err
       conn.query sql, (err, result) ->

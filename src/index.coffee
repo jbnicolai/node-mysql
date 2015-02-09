@@ -156,6 +156,9 @@ class Mysql
         cb err, result
 
   queryOne: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
     @query sql, data, (err, result) ->
       return cb err if err
       return cb() unless result?.length
@@ -164,6 +167,9 @@ class Mysql
       cb err, result[0][Object.keys(result[0])]
 
   queryRow: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
     @query sql, data, (err, result) ->
       return cb err if err
       return cb() unless result?.length
@@ -172,6 +178,9 @@ class Mysql
       cb err, result[0]
 
   queryCount: (sql, data, cb) ->
+    unless typeof cb is 'function'
+      cb = data
+      data = null
     @query sql, data, (err, result) ->
       return cb err if err
       return cb null, result?.length

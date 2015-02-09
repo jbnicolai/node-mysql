@@ -4,6 +4,13 @@ Version changes
 The following list gives a short overview about what is changed between
 individual versions:
 
+Version 0.1.0 (2015-02-09)
+-------------------------------------------------
+- Documented simple database usage.
+- Added optional data replacement in query calls.
+- Fixed multiple set EventListener.
+- Fixed bug in connection pool management blocking reuse of connections.
+
 Version 0.0.5 (2015-02-05)
 -------------------------------------------------
 - Fix in insertId.
